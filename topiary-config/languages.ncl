@@ -100,5 +100,13 @@
         symbol = "tree_sitter_query",
       },
     },
+
+    quint = {
+      extensions = ["qnt"],
+      grammar.source.git = {
+        git = "https://github.com/gruhn/tree-sitter-quint",
+        rev = "eebbd01edfeff6404778c92efe5554e42e506a18",
+      }
+    }
   },
 }
