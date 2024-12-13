@@ -81,24 +81,35 @@
 )
 
 (
-  "(" @append_empty_softline @append_indent_start
+  "(" @append_empty_softline @append_indent_start @append_antispace
   _
-  ")" @prepend_empty_softline @prepend_indent_end
+  ")" @prepend_empty_softline @prepend_indent_end @prepend_antispace
 )
 
 (operator_definition
-  (qualified_identifier)
+  (qualified_identifier) @append_antispace
   _
   "=" @append_spaced_softline @append_indent_start
-  [ "{" ]* @do_nothing
+  ;; TODO: this do_nothing is not working
+  (expr . [ (braced_all) (braced_any) (braced_and) "{" ])? @do_nothing
   (expr) @append_indent_end
 )
 
 (operator_application
   (qualified_identifier) @append_antispace
-  "("
-  (_) @prepend_antispace @append_antispace
-  ")"
+  "(" @append_antispace
+  _
+  ")" @prepend_antispace
+)
+
+(operator_application
+  (qualified_identifier) @append_antispace
+  _
+)
+
+(local_operator_definition
+  (operator_definition) @prepend_spaced_softline @append_spaced_softline
+  (expr)
 )
 
 ;; TODO: fix me, this is not working and we should probably not ident "else if"s
@@ -113,13 +124,9 @@
  (expr) @append_indent_end
 )
 
-(
-  "," @append_spaced_softline
-)
-
 ; Never put a space before a comma
 (
-  "," @prepend_antispace
+  "," @append_spaced_softline @prepend_antispace @append_space
 )
 
 ; Never put spaces around dots
@@ -130,4 +137,9 @@
 ; Assignments should always look like x' = 1
 (
   "'" @prepend_antispace @append_space
+)
+
+; Types should always look like x: int
+(
+  ":" @prepend_antispace @append_space
 )
