@@ -86,15 +86,6 @@
   ")" @prepend_empty_softline @prepend_indent_end @prepend_antispace
 )
 
-(operator_definition
-  (qualified_identifier) @append_antispace
-  _
-  "=" @append_spaced_softline @append_indent_start
-  ;; TODO: this do_nothing is not working
-  (expr . [ (braced_all) (braced_any) (braced_and) "{" ])? @do_nothing
-  (expr) @append_indent_end
-)
-
 (operator_application
   (qualified_identifier) @append_antispace
   "(" @append_antispace
@@ -102,9 +93,22 @@
   ")" @prepend_antispace
 )
 
+
 (operator_application
   (qualified_identifier) @append_antispace
   _
+)
+
+(operator_definition
+  (qualified_identifier) @append_indent_start
+  (expr
+    [ (braced_any) (braced_all) (braced_and) (braced_or) "{" ]? @do_nothing
+  ) @append_indent_end
+)
+
+(operator_definition
+  (qualified_identifier)
+  (typed_argument_list) @prepend_antispace
 )
 
 (local_operator_definition
