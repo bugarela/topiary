@@ -75,9 +75,9 @@
 )
 
 (
-  "{" @append_spaced_softline @append_indent_start
+  "{" @append_spaced_softline @append_indent_start @prepend_space
   _
-  "}" @prepend_spaced_softline @prepend_indent_end
+  "}" @prepend_spaced_softline @prepend_indent_end @append_space
 )
 
 (
@@ -93,7 +93,6 @@
   ")" @prepend_antispace
 )
 
-
 (operator_application
   (qualified_identifier) @append_antispace
   _
@@ -102,7 +101,8 @@
 (operator_definition
   (qualified_identifier) @append_indent_start
   (expr
-    [ (braced_any) (braced_all) (braced_and) (braced_or) "{" ]? @do_nothing
+    ;; TODO: is there a more general rule here? I want to match things that will be indented because of braces or parameters
+    [ (braced_any) (braced_all) (braced_and) (braced_or) (operator_application . (qualified_identifier)) "{" (record_literal) ]? @do_nothing
   ) @append_indent_end
 )
 
@@ -118,14 +118,14 @@
 
 ;; TODO: fix me, this is not working and we should probably not ident "else if"s
 (if_else_condition
- "if"
- "("
  (expr) @prepend_antispace @append_antispace
- ")" @append_spaced_softline @append_indent_start
- (expr)
- "else" @prepend_indent_end @append_indent_start @append_spaced_softline @prepend_spaced_softline
- (if_else_condition)* @do_nothing
- (expr) @append_indent_end
+ .
+ (expr) @append_spaced_softline @append_indent_start
+ .
+ "else" @prepend_indent_end @append_indent_start
+ (expr
+   (if_else_condition)* @do_nothing
+ ) @append_indent_end
 )
 
 ; Never put a space before a comma
