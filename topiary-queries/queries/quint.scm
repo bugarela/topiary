@@ -111,16 +111,18 @@
 
 (if_else_condition
   (expr) @prepend_antispace @append_antispace
-  ")" @append_spaced_softline @append_indent_start
-  (expr) @append_indent_end @append_spaced_softline
+  ")" @append_indent_start
+  (expr) @prepend_spaced_softline @append_indent_end
+  "else" @prepend_spaced_softline
   (expr)
 )
 
 (if_else_condition
+  "else" @append_indent_start
   (expr
     ;; don't over-indent "else if" blocks
     (if_else_condition)? @do_nothing
-  ) @prepend_spaced_softline @prepend_indent_start @append_indent_end
+  ) @prepend_spaced_softline @append_indent_end
   .
 )
 
@@ -132,7 +134,7 @@
 
 (match_expr
   "|" @prepend_hardline
-  (match_case) @append_hardline
+  (match_case)
 )
 
 ;; sum type spacing
