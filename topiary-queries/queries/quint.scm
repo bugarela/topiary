@@ -30,6 +30,8 @@
   .
 )
 
+(unary_expr "-" @append_antispace)
+
 [
  (qualified_identifier)
  "="
@@ -77,20 +79,11 @@
  "]" @prepend_antispace
 )
 
-
 ; Consecutive definitions must be separated by line breaks
 (
   (operator_definition) @append_hardline
   .
   (operator_definition)
-)
-
-
-(operator_application
-  (qualified_identifier) @append_antispace
-  "(" @append_antispace
-  _
-  ")" @prepend_antispace
 )
 
 (operator_application
@@ -118,13 +111,17 @@
 
 (if_else_condition
   (expr) @prepend_antispace @append_antispace
-  .
-  (expr) @append_spaced_softline @prepend_indent_start @append_indent_end @prepend_spaced_softline
-  .
+  ")" @append_spaced_softline @append_indent_start
+  (expr) @append_indent_end @append_spaced_softline
+  (expr)
+)
+
+(if_else_condition
   (expr
     ;; don't over-indent "else if" blocks
-    (if_else_condition)* @prepend_indent_end @append_indent_start
-  ) @prepend_indent_start @append_indent_end
+    (if_else_condition)? @do_nothing
+  ) @prepend_spaced_softline @prepend_indent_start @append_indent_end
+  .
 )
 
 (match_expr
