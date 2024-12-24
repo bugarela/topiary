@@ -91,6 +91,12 @@
   _
 )
 
+(binary_expr
+ (expr) @append_indent_start
+ "." @prepend_input_softline
+ (ufcs_right_hand_side) @append_indent_end
+)
+
 (operator_definition
   (qualified_identifier) @append_indent_start
   (expr
